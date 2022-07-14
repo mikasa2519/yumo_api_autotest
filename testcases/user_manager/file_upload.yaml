@@ -1,0 +1,11 @@
+-
+  name: 上传文件
+  request:
+    method: post
+    url: https://api.weixin.qq.com/cgi-bin/media/uploadimg
+    headers: null
+    params:
+      access_token: access_token
+    files:
+      media: "D:\\测试数据\\RS\\图片测试数据\\150-150.png"
+  validata: null
