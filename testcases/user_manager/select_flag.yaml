@@ -2,8 +2,5 @@
   name: 查询标签
   request:
     method: get
-    url: https://api.weixin.qq.com/cgi-bin/tags/get
-    headers: null
-    params:
-      access_token: access_token
-  validata: null
+    url: https://api.weixin.qq.com/cgi-bin/tags/get?access_token=${access_token}
+  validate: null

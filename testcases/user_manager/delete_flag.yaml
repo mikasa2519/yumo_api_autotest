@@ -7,4 +7,4 @@
     params:
       access_token: access_token
     json: {"tag":{"id":134}}
-  validata: null
+  validate: null

@@ -8,4 +8,4 @@
       access_token: access_token
     json: {"tag": {"id": 137, "name": 广东组abc"}}
 
-  validata: null
+  validate: null

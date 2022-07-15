@@ -3,4 +3,4 @@
   request:
     method: get
     url: http://47.107.116.139/phpwind/
-  validata: null
+  validate: null
