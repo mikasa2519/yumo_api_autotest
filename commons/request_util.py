@@ -67,7 +67,7 @@ class RequestUtil:
         else:
             print("用例必须包含一级关键字：name request validate")
 
-# 统一请求封装
+    # 统一请求封装
     def send_request(self, method, url, **kwargs):
         """
         :param method: 接口请求方法
@@ -106,7 +106,5 @@ class RequestUtil:
 
             # 替换
 
-
         else:
             print("None不需要通过${变量名}取值")
-

@@ -7,3 +7,4 @@ pytest-base-url
 allure-pytest
 PyYAML~=6.0
 requests
+jsonpath
