@@ -4,7 +4,7 @@ import re
 import pytest
 
 from commons.request_util import RequestUtil
-from commons.yaml_util import write_yaml, read_extract_yaml, read_testcase_yaml
+from commons.yaml_util import read_extract_yaml, read_testcase_yaml
 
 
 class TestApi:
@@ -43,16 +43,16 @@ class TestApi:
     #     result = res.json()
     #     print(result, type(result))
     #
-    # @pytest.mark.parametrize("caseinfo", read_testcase_yaml("testcases/user_manager/file_upload.yaml"))
-    # def test_file_upload(self, caseinfo):
-    #     method = caseinfo["request"]["method"]
-    #     urls = caseinfo["request"]["url"]
-    #     params = caseinfo["request"]["params"]
-    #     params["access_token"] = read_extract_yaml("extract.yaml", "access_token")
-    #     datas = caseinfo["request"]["files"]
-    #     datas["media"] = open(datas["media"], "rb")
-    #     res = RequestUtil().send_request(method="post", url=urls, files=datas, params=params)
-    #     result = res.json()
-    #     print(result, type(result))
+    @pytest.mark.parametrize("caseinfo", read_testcase_yaml("testcases/user_manager/file_upload.yaml"))
+    def test_file_upload(self, caseinfo):
+        methods = caseinfo["request"]["method"]
+        urls = caseinfo["request"]["url"]
+        params = caseinfo["request"]["params"]
+        params["access_token"] = read_extract_yaml("extract.yaml", "access_token")
+        datas = caseinfo["request"]["files"]
+        datas["media"] = open(datas["media"], "rb")
+        res = RequestUtil().send_request(method=methods, url=urls, files=datas, params=params)
+        result = res.json()
+        print(result, type(result))
 
 
