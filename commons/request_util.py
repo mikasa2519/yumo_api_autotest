@@ -1,6 +1,5 @@
 import json
 import re
-
 import jsonpath
 import requests
 from commons.yaml_util import write_yaml, read_extract_yaml
@@ -16,7 +15,6 @@ class RequestUtil:
         :param caseinfo: Yaml测试用例数据
         :return: 无返回
         """
-
         # 判断YAML测试用例文件是否正确
         caseinfo_keys = caseinfo.keys()
         if "name" and "request" and "validate" in caseinfo_keys:

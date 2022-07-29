@@ -6,5 +6,5 @@
     headers: null
     params:
       access_token: ${access_token}
-    json: {"tag": {"name": 安徽2"}}
+    json: {"tag": {"name": "安徽${}"}}
   validate: null
