@@ -10,6 +10,26 @@ class RequestUtil:
     # 初始化session对象
     sess = requests.session()
 
+    # 统一请求封装
+    def send_request(self, method, url, **kwargs):
+        """
+        :param method: 接口请求方法
+        :param url: 接口请求url
+        :param kwargs: 其他请求数据
+        :return: 请求结果
+        """
+        # method统一小写
+        method = str(method).lower()
+
+        # url通过${变量名}取值
+
+        # headers通过${变量名}取值
+
+        # params,data,json通过${变量名}取值
+
+        res = RequestUtil.sess.request(method, url, **kwargs)
+        return res
+
     # 规范YAML测试用例
     def standard_yaml_testcases(self, caseinfo):
         """
@@ -20,9 +40,10 @@ class RequestUtil:
         # 判断YAML测试用例文件是否正确
         caseinfo_keys = caseinfo.keys()
         if "name" and "request" and "validate" in caseinfo_keys:
-            request_key = caseinfo["request"].keys()
-            if "method" and "url" in request_key:
+            request_keys = caseinfo["request"].keys()
+            if "method" and "url" in request_keys:
 
+                # 调用接口
                 # 取得二级关键字，并从request字典中删除
                 method = caseinfo["request"].pop("method")
                 url = caseinfo["request"].pop("url")
@@ -45,9 +66,13 @@ class RequestUtil:
                 # 提取需要的关联数据并写入extract.yaml文件
                 # 只支持正则提取和jsonpath提取
                 if "extract" in caseinfo.keys():
+
+                    # 遍历字典需要使用字典对象item()，遍历出来的是key和value的值
                     for key, value in caseinfo["extract"].items():
                         # 正则提取中间关联变量
                         if "(.*?)" in value or "(.+?)" in value:
+
+                            # 通过re.search(“表达式”，要提取的源文本)来进行正则提取
                             regular_value = re.search(value, text_result)
                             if regular_value:
                                 data = {key: regular_value.group(1)}
@@ -56,6 +81,7 @@ class RequestUtil:
                                 print("extract中间变量提取失败，请检查正则提取表达式")
                         # jsonpath提取中间关联变量,仅仅支持json格式数据
                         else:
+                            # js_value会是一个list
                             js_value = jsonpath.jsonpath(json_result, value)
                             if js_value:
                                 data = {key: js_value[0]}
@@ -66,26 +92,6 @@ class RequestUtil:
                 print("用例必须包含二级关键字：method，url")
         else:
             print("用例必须包含一级关键字：name request validate")
-
-    # 统一请求封装
-    def send_request(self, method, url, **kwargs):
-        """
-        :param method: 接口请求方法
-        :param url: 接口请求url
-        :param kwargs: 其他请求数据
-        :return: 请求结果
-        """
-        # method统一小写
-        method = str(method).lower()
-
-        # url通过${变量名}取值
-
-        # headers通过${变量名}取值
-
-        # params,data,json通过${变量名}取值
-
-        res = RequestUtil.sess.request(method, url, **kwargs)
-        return res
 
     # 封装替换取值(获取中间变量)的方法
     # 注意1：取值可能的是(url, params, data, json, headers)
