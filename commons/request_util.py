@@ -3,32 +3,12 @@ import re
 
 import jsonpath
 import requests
-from commons.yaml_util import write_yaml
+from commons.yaml_util import write_yaml, read_extract_yaml
 
 
 class RequestUtil:
     # 初始化session对象
     sess = requests.session()
-
-    # 统一请求封装
-    def send_request(self, method, url, **kwargs):
-        """
-        :param method: 接口请求方法
-        :param url: 接口请求url
-        :param kwargs: 其他请求数据
-        :return: 请求结果
-        """
-        # method统一小写
-        method = str(method).lower()
-
-        # url通过${变量名}取值
-
-        # headers通过${变量名}取值
-
-        # params,data,json通过${变量名}取值
-
-        res = RequestUtil.sess.request(method, url, **kwargs)
-        return res
 
     # 规范YAML测试用例
     def standard_yaml_testcases(self, caseinfo):
@@ -93,8 +73,8 @@ class RequestUtil:
         else:
             print("用例必须包含一级关键字：name request validate")
 
-    # 封装替换取值(获取中间变量)的方法
-    # 注意1：取值可能的是(url, params, data, json, headers)
+    # 封装替换取得的中间变量的方法，将standard_yaml_testcases方法中获取的中间变量，替换到需要的地方(url，param，data，json)
+    # 注意1：取中间变量的地方可能的是(url, params, data, json, headers)
     # 注意2：各种数据类型的切换：(int,float,string,list,dict)
     def replace_get_value(self, data):
         """
@@ -104,13 +84,57 @@ class RequestUtil:
         if data:
             data_type = type(data)
             if isinstance(data, list) or isinstance(data, dict):
-                # 只有字符串才能进行替换
+                # 只有字符串才能进行切片，替换
                 # 如果传入数据是列表或者字典，则对其进行序列化转化为字符串
                 str_data = json.dumps(data)
             else:
                 str_data = str(data)
 
             # 替换
+            for a in range(1, str_data.count("${") + 1):
+                if "${" and "}" in str_data:
+                    start_index = str_data.index("${")
+                    end_index = str_data.index("}", start_index)
+                    old_value = str_data[start_index:end_index + 1]
+                    new_value = read_extract_yaml("extract.yaml", old_value[2:-1])
+                    str_data = str_data.replace(old_value, new_value)
+                    print(str_data)
+            # 还原数据类型
+            if isinstance(data, list) or isinstance(data, dict):
+                data = json.loads(str_data)
+            else:
+                data = data_type(str_data)
+            # 返回值
+            return data
 
         else:
+            return data
             print("None不需要通过${变量名}取值")
+
+    # 统一请求封装
+    def send_request(self, method, url, **kwargs):
+        """
+        :param method: 接口请求方法
+        :param url: 接口请求url
+        :param kwargs: 其他请求数据
+        :return: 请求结果
+        """
+        # method统一小写
+        method = str(method).lower()
+
+        # url通过${变量名}取值
+        url = self.replace_get_value(url)
+        # headers,params,datas,json通过${变量名}取值
+        for key, value in kwargs.items():
+            if key in ["headers", "params", "data", "json"]:
+                kwargs[key] = self.replace_get_value(value)
+
+            # 处理文件上传
+            elif key == "files":
+                for file_key, file_value in value.items():
+                    value[file_key] = open(file_value, "rb")
+
+        # 通过session发起请求
+        res = RequestUtil.sess.request(method, url, **kwargs)
+        print(res.text)
+        return res

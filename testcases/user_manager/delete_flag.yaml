@@ -5,6 +5,6 @@
     url: https://api.weixin.qq.com/cgi-bin/tags/delete
     headers: null
     params:
-      access_token: access_token
-    json: {"tag":{"id":134}}
+      access_token: ${access_token}
+    json: {"tag":{"id":100}}
   validate: null
