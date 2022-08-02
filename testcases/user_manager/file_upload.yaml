@@ -5,7 +5,7 @@
     url: https://api.weixin.qq.com/cgi-bin/media/uploadimg
     headers: null
     params:
-      access_token: ${access_token}
+      access_token: ${read_extract_yaml(access_token)}
     files:
       media: "D:\\测试相关文档\\测试数据\\图片测试数据\\150-150.jpg"
   validate: null

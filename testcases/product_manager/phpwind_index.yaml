@@ -3,4 +3,6 @@
   request:
     method: get
     url: http://47.107.116.139/phpwind/
+  extract:
+    csrf_token: '<input type="hidden" name="csrf_token" value="(.*?))"/>'
   validate: null

@@ -5,6 +5,6 @@
     url: https://api.weixin.qq.com/cgi-bin/tags/create
     headers: null
     params:
-      access_token: ${access_token}
-    json: {"tag": {"name": "安徽${}"}}
+      access_token: ${read_extract_yaml(access_token)}
+    json: {"tag": {"name": "安徽${get_random(10000, 99999)}"}}
   validate: null

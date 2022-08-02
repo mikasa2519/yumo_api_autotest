@@ -9,7 +9,7 @@
     data:
       username: admin
       password: msjy123
-      csrf_token: csrf_token
+      csrf_token: ${read_extract_yaml(csrf_token)}
       backurl: "http://47.107.116.139/phpwind/"
       invite: null
   validate: null

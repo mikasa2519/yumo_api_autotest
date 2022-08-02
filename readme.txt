@@ -12,4 +12,9 @@
             expires_in: $.expires_in
 
     2.使用中间变量(可以再url，params，data，json，headers中传入中间变量)
-        ${变量名}
+        ${read_extract(access_token)}
+
+三、热加载
+1.在hotloads里面新建一个py文件，并创建一个类，再类里面写方法
+2.在yaml测试用例中通过以下方式调用方法，实现热加载
+    广东组${get_random(10000,99999)}

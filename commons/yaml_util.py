@@ -8,11 +8,11 @@ def get_object_path():
     return os.getcwd()
 
 
-# 读取extract.yaml文件
-def read_extract_yaml(yaml_path, key):
-    with open(get_object_path() + "/" + yaml_path, mode="r", encoding="utf-8", ) as f:
-        result = yaml.load(stream=f, Loader=yaml.FullLoader)
-        return result[key]
+# # 读取extract.yaml文件
+# def read_extract_yaml(yaml_path, key):
+#     with open(get_object_path() + "/" + yaml_path, mode="r", encoding="utf-8", ) as f:
+#         result = yaml.load(stream=f, Loader=yaml.FullLoader)
+#         return result[key]
 
 
 # 写入yaml文件

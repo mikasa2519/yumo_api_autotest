@@ -2,12 +2,18 @@ import json
 import re
 import jsonpath
 import requests
-from commons.yaml_util import write_yaml, read_extract_yaml
+
+from commons.assert_util import assert_result
+from commons.yaml_util import write_yaml
 
 
 class RequestUtil:
     # 初始化session对象
     sess = requests.session()
+
+    # 初始化热加载对象
+    def __init__(self, obj):
+        self.obj = obj
 
     # 规范YAML测试用例
     def standard_yaml_testcases(self, caseinfo):
@@ -66,6 +72,10 @@ class RequestUtil:
                                 write_yaml("extract.yaml", data)
                             else:
                                 print("extract中间变量提取失败，请检查jsonpath提取表达式")
+                # 断言
+                yq_result = caseinfo["validate"]
+                sj_result = text_result
+                assert_result(yq_result, sj_result)
             else:
                 print("用例必须包含二级关键字：method，url")
         else:
@@ -94,9 +104,23 @@ class RequestUtil:
                     start_index = str_data.index("${")
                     end_index = str_data.index("}", start_index)
                     old_value = str_data[start_index:end_index + 1]
-                    new_value = read_extract_yaml("extract.yaml", old_value[2:-1])
-                    str_data = str_data.replace(old_value, new_value)
-                    print(str_data)
+                    # 反射：通过getattr进行方法的调用
+                    # 获取方法名
+
+                    function_name = old_value[2:old_value.index("(")]
+                    # 获取参数
+                    args_value = old_value[old_value.index("(") + 1:old_value.index(")")]
+                    # 如果有参数
+                    if args_value != "":
+                        # 分割参数
+                        # 通过逗号进行分割
+                        args_value = args_value.split(",")
+                        new_value = getattr(self.obj, function_name)(*args_value)
+                    # 没有参数
+                    else:
+                        new_value = getattr(self.obj, function_name)()
+
+                    str_data = str_data.replace(old_value, str(new_value))
             # 还原数据类型
             if isinstance(data, list) or isinstance(data, dict):
                 data = json.loads(str_data)
@@ -107,7 +131,6 @@ class RequestUtil:
 
         else:
             return data
-            print("None不需要通过${变量名}取值")
 
     # 统一请求封装
     def send_request(self, method, url, **kwargs):

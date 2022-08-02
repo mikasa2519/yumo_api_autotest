@@ -2,5 +2,5 @@
   name: 查询标签
   request:
     method: get
-    url: https://api.weixin.qq.com/cgi-bin/tags/get?access_token=${access_token}
+    url: https://api.weixin.qq.com/cgi-bin/tags/get?access_token=${read_extract_yaml(access_token)}
   validate: null

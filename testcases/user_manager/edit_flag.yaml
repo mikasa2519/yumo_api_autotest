@@ -5,6 +5,6 @@
     url: https://api.weixin.qq.com/cgi-bin/tags/update
     headers: null
     params:
-      access_token: ${access_token}
-    json: {"tag": {"id": 101, "name": 广东组123"}}
+      access_token: ${read_extract_yaml(access_token)}
+    json: {"tag": {"id": 101, "name": "广东组${get_random(10000,99999)}"}}
   validate: null
