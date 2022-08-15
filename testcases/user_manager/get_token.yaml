@@ -3,14 +3,14 @@
   request:
     method: get
     url: https://api.weixin.qq.com/cgi-bin/token
-    headers: null
+    headers:
     params:
       grant_type: client_credential
       appid: wx0999a856842e4ebb
       secret: 14d5ae4c084bfd8f7811777d07d998cd
   extract:
     access_token: '"access_token":"(.*?)"'
-    expires_in: $.expires_in
+    expires_in: $..expires_in
   validate:
     - equals: {status_code: 200}
     - equals: {expires_in: 7200}

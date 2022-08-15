@@ -39,6 +39,7 @@ class RequestUtil:
 
                 # 获得文本格式的返回结果
                 text_result = res.text
+                status_code = res.status_code
 
                 # 获取json格式的返回结果
                 json_result = ""
@@ -67,6 +68,7 @@ class RequestUtil:
                         else:
                             # js_value会是一个list
                             js_value = jsonpath.jsonpath(json_result, value)
+                            print(js_value)
                             if js_value:
                                 data = {key: js_value[0]}
                                 write_yaml("extract.yaml", data)
@@ -74,15 +76,19 @@ class RequestUtil:
                                 print("extract中间变量提取失败，请检查jsonpath提取表达式")
                 # 断言
                 yq_result = caseinfo["validate"]
-                sj_result = text_result
-                assert_result(yq_result, sj_result)
+                sj_result = json_result
+                all_flag = assert_result(yq_result, sj_result, status_code)
+                if all_flag == 0:
+                    print("断言成功")
+                else:
+                    print("断言失败")
             else:
                 print("用例必须包含二级关键字：method，url")
         else:
             print("用例必须包含一级关键字：name request validate")
 
-    # 封装替换取得的中间变量的方法，将standard_yaml_testcases方法中获取的中间变量，替换到需要的地方(url，param，data，json)
-    # 注意1：取中间变量的地方可能的是(url, params, data, json, headers)
+    # 封装替换取得的中间变量的方法，将standard_yaml_testcases方法中获取的中间变量，替换到需要用到的地方(url，param，data，json)
+    # 注意1：使用中间变量的地方可能的是(url, params, data, json, headers)
     # 注意2：各种数据类型的切换：(int,float,string,list,dict)
     def replace_get_value(self, data):
         """
@@ -106,7 +112,6 @@ class RequestUtil:
                     old_value = str_data[start_index:end_index + 1]
                     # 反射：通过getattr进行方法的调用
                     # 获取方法名
-
                     function_name = old_value[2:old_value.index("(")]
                     # 获取参数
                     args_value = old_value[old_value.index("(") + 1:old_value.index(")")]
